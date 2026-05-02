@@ -116,7 +116,22 @@ export interface CmsLeadEnquiry extends Omit<CmsBaseRecord, 'status'> {
   internalNotes?: string;
 }
 
+export interface CmsCampaign extends CmsBaseRecord {
+  campaignType: 'banner' | 'modal' | 'toast' | 'overlay';
+  placement: 'header-top' | 'footer-bottom' | 'global-sidebar' | 'specific-page';
+  targetPages?: string[];
+  content: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
+  backgroundColor?: string;
+  textColor?: string;
+  startDate?: string;
+  endDate?: string;
+  priority?: number;
+}
+
 export interface CmsAuditLog {
+
   id?: string;
   collectionName: string;
   recordId: string;

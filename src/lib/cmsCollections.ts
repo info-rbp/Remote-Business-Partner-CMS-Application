@@ -6,6 +6,7 @@ export const CMS_COLLECTIONS = {
   mediaAssets: 'cms_media_assets',
   documentProducts: 'cms_document_products',
   leadEnquiries: 'cms_lead_enquiries',
+  campaigns: 'cms_campaigns',
   auditLogs: 'cms_audit_logs',
 } as const;
 
