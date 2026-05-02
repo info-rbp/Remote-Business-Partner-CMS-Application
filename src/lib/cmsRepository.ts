@@ -35,10 +35,10 @@ export async function createCmsRecord<T extends Omit<CmsBaseRecord, 'id' | 'crea
   return newRef.id;
 }
 
-export async function updateCmsRecord(
+export async function updateCmsRecord<T extends Partial<any>>(
   collectionName: string,
   id: string,
-  data: Partial<CmsBaseRecord>,
+  data: T,
   actor: CmsAdminUser
 ): Promise<void> {
   const recordRef = doc(db, collectionName, id);
@@ -51,6 +51,7 @@ export async function updateCmsRecord(
   await updateDoc(recordRef, updateData);
   await logAuditAction(collectionName, id, 'update', actor, `Updated record`);
 }
+
 
 export async function publishCmsRecord(
   collectionName: string,

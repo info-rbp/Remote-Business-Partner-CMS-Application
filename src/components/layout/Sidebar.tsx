@@ -10,8 +10,10 @@ import {
   AppWindow,
   Users,
   Megaphone,
+  MessageSquare,
   Globe,
   FolderOpen,
+
   LayoutTemplate
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -33,7 +35,9 @@ const platformCore = [
   { path: '/resources', name: 'Resources Manager', icon: FolderOpen },
   { path: '/navigation', name: 'Navigation Manager', icon: LayoutTemplate },
   { path: '/offers', name: 'Offers Manager', icon: Gift },
+  { path: '/enquiries', name: 'Leads & Enquiries', icon: MessageSquare },
   { path: '/campaigns', name: 'Campaigns & SEO', icon: Megaphone },
+
   { path: '/settings', name: 'Global Settings', icon: Globe },
 ];
 

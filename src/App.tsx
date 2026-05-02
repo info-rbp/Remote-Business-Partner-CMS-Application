@@ -10,7 +10,10 @@ import { NavigationListPage } from './pages/navigation/NavigationListPage';
 import { NavEditorPage } from './pages/navigation/NavEditorPage';
 import { OffersListPage } from './pages/offers/OffersListPage';
 import { OfferEditorPage } from './pages/offers/OfferEditorPage';
+import { EnquiriesListPage } from './pages/enquiries/EnquiriesListPage';
+import { EnquiryDetailsPage } from './pages/enquiries/EnquiryDetailsPage';
 import { LoginPage } from './pages/LoginPage';
+
 import { AuthProvider } from './components/auth/AuthProvider';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
@@ -37,7 +40,10 @@ function App() {
                   <Route path="/offers" element={<OffersListPage />} />
                   <Route path="/offers/new" element={<OfferEditorPage />} />
                   <Route path="/offers/:id/edit" element={<OfferEditorPage />} />
+                  <Route path="/enquiries" element={<EnquiriesListPage />} />
+                  <Route path="/enquiries/:id" element={<EnquiryDetailsPage />} />
                 </Routes>
+
               </AppLayout>
             } />
           </Route>
