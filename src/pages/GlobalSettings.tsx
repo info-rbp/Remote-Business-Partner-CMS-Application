@@ -1,15 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
-import { Activity, Database, CreditCard, Sparkles, RefreshCw, Layers, Users, LayoutTemplate, Link as LinkIcon, Save, Settings2, Globe, FileText } from 'lucide-react';
+import { Activity, Database, CreditCard, Sparkles, RefreshCw, Layers, Users, LayoutTemplate, Link as LinkIcon, Save, Settings2, Globe, FileText, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import { cn } from '../lib/utils';
+import { useAuth } from '../hooks/useAuth';
+import { fetchGlobalSettings, saveGlobalSettings } from '../services/globalSettingsService';
+import type { CmsGlobalSettings } from '../types/cms';
 
-type TabType = 'infrastructure' | 'tenants' | 'membership' | 'ux';
+type TabType = 'infrastructure' | 'tenants' | 'membership' | 'ux' | 'site';
 
 export function GlobalSettings() {
   const { firestoreSyncStatus, setFirestoreSyncStatus } = useAppStore();
+  const { adminData } = useAuth();
   const [activeTab, setActiveTab] = useState<TabType>('infrastructure');
+
+  // Site Settings state
+  const [siteSettings, setSiteSettings] = useState<Omit<CmsGlobalSettings, 'id' | 'updatedAt' | 'updatedBy'>>({ 
+    siteName: 'RBP Hub', defaultSeoTitle: '', defaultSeoDescription: '',
+    contactEmail: '', contactPhone: '', primaryCtaLabel: '', primaryCtaUrl: '',
+    footerDisclosure: '', financeDisclaimer: '', affiliateDisclosure: '',
+  });
+  const [settingsLoading, setSettingsLoading] = useState(false);
+  const [settingsSaving, setSettingsSaving] = useState(false);
+  const [settingsSaved, setSettingsSaved] = useState(false);
+  const [settingsError, setSettingsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (activeTab !== 'site') return;
+    setSettingsLoading(true);
+    fetchGlobalSettings()
+      .then(data => { if (data) setSiteSettings(data as any); })
+      .catch(_err => setSettingsError('Failed to load settings.'))
+      .finally(() => setSettingsLoading(false));
+  }, [activeTab]);
+
+  const handleSiteSettingChange = (field: string, value: string) => {
+    setSiteSettings(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveSettings = async () => {
+    if (!adminData) return;
+    setSettingsSaving(true);
+    setSettingsError(null);
+    setSettingsSaved(false);
+    try {
+      await saveGlobalSettings(siteSettings, adminData);
+      setSettingsSaved(true);
+      setTimeout(() => setSettingsSaved(false), 3000);
+    } catch (err: any) {
+      setSettingsError('Failed to save settings.');
+    } finally {
+      setSettingsSaving(false);
+    }
+  };
 
   // Local state for infrastructure
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -76,6 +120,7 @@ export function GlobalSettings() {
     { id: 'tenants', name: 'Tenant Hubs', icon: Layers },
     { id: 'membership', name: 'Memberships', icon: Users },
     { id: 'ux', name: 'Global UX', icon: LayoutTemplate },
+    { id: 'site', name: 'Site Settings', icon: Settings2 },
   ] as const;
 
   return (
@@ -331,6 +376,98 @@ export function GlobalSettings() {
               </div>
             </CardContent>
           </Card>
+        )}
+        {activeTab === 'site' && (
+          <div className="space-y-6">
+            {settingsLoading ? (
+              <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-slate-400" /></div>
+            ) : (
+              <>
+                {settingsError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-xl flex items-center text-red-700 text-sm">
+                    <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" /> {settingsError}
+                  </div>
+                )}
+                {settingsSaved && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center text-emerald-700 text-sm">
+                    <CheckCircle2 className="w-4 h-4 mr-2 flex-shrink-0" /> Settings saved to Firestore.
+                  </div>
+                )}
+
+                {/* Core Identity */}
+                <Card>
+                  <CardHeader><CardTitle className="flex items-center"><Globe className="w-5 h-5 mr-2 text-slate-900" />Core Site Identity</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {[
+                        { field: 'siteName', label: 'Site Name' },
+                        { field: 'contactEmail', label: 'Contact Email' },
+                        { field: 'contactPhone', label: 'Contact Phone' },
+                        { field: 'primaryCtaLabel', label: 'Primary CTA Label' },
+                        { field: 'primaryCtaUrl', label: 'Primary CTA URL' },
+                      ].map(({ field, label }) => (
+                        <div key={field}>
+                          <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
+                          <input
+                            value={(siteSettings as any)[field] || ''}
+                            onChange={(e) => handleSiteSettingChange(field, e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Default SEO */}
+                <Card>
+                  <CardHeader><CardTitle className="flex items-center"><FileText className="w-5 h-5 mr-2 text-slate-900" />Default SEO</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Default SEO Title</label>
+                      <input value={siteSettings.defaultSeoTitle || ''}
+                        onChange={(e) => handleSiteSettingChange('defaultSeoTitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Default SEO Description</label>
+                      <textarea rows={3} value={siteSettings.defaultSeoDescription || ''}
+                        onChange={(e) => handleSiteSettingChange('defaultSeoDescription', e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 resize-none" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Legal Disclosures */}
+                <Card>
+                  <CardHeader><CardTitle className="flex items-center"><FileText className="w-5 h-5 mr-2 text-slate-900" />Legal Disclosures</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                    {[
+                      { field: 'footerDisclosure', label: 'Footer Disclosure' },
+                      { field: 'financeDisclaimer', label: 'Finance Disclaimer' },
+                      { field: 'affiliateDisclosure', label: 'Affiliate Disclosure' },
+                    ].map(({ field, label }) => (
+                      <div key={field}>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
+                        <textarea rows={3} value={(siteSettings as any)[field] || ''}
+                          onChange={(e) => handleSiteSettingChange(field, e.target.value)}
+                          className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 resize-none" />
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+
+                {/* Save */}
+                <div className="flex justify-end">
+                  <button onClick={handleSaveSettings} disabled={settingsSaving}
+                    className="inline-flex items-center px-5 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-medium hover:bg-slate-800 disabled:opacity-50 transition-colors">
+                    {settingsSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                    {settingsSaving ? 'Saving...' : 'Save to Firestore'}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         )}
       </div>
     </div>
