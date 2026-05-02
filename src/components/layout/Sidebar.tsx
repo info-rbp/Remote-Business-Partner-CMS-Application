@@ -32,9 +32,11 @@ const platformCore = [
   { path: '/users', name: 'Users & Membership', icon: Users },
   { path: '/resources', name: 'Resources Manager', icon: FolderOpen },
   { path: '/navigation', name: 'Navigation Manager', icon: LayoutTemplate },
+  { path: '/offers', name: 'Offers Manager', icon: Gift },
   { path: '/campaigns', name: 'Campaigns & SEO', icon: Megaphone },
   { path: '/settings', name: 'Global Settings', icon: Globe },
 ];
+
 
 export function Sidebar() {
   const { activeProject, setActiveProject } = useAppStore();

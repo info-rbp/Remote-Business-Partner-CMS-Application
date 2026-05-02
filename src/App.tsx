@@ -8,6 +8,8 @@ import { ResourcesListPage } from './pages/resources/ResourcesListPage';
 import { ResourceEditorPage } from './pages/resources/ResourceEditorPage';
 import { NavigationListPage } from './pages/navigation/NavigationListPage';
 import { NavEditorPage } from './pages/navigation/NavEditorPage';
+import { OffersListPage } from './pages/offers/OffersListPage';
+import { OfferEditorPage } from './pages/offers/OfferEditorPage';
 import { LoginPage } from './pages/LoginPage';
 import { AuthProvider } from './components/auth/AuthProvider';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -32,6 +34,9 @@ function App() {
                   <Route path="/navigation" element={<NavigationListPage />} />
                   <Route path="/navigation/new" element={<NavEditorPage />} />
                   <Route path="/navigation/:id/edit" element={<NavEditorPage />} />
+                  <Route path="/offers" element={<OffersListPage />} />
+                  <Route path="/offers/new" element={<OfferEditorPage />} />
+                  <Route path="/offers/:id/edit" element={<OfferEditorPage />} />
                 </Routes>
               </AppLayout>
             } />
@@ -41,5 +46,6 @@ function App() {
     </AuthProvider>
   );
 }
+
 
 export default App;
