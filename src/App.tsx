@@ -6,6 +6,8 @@ import { CampaignsSEO } from './pages/CampaignsSEO';
 import { GlobalSettings } from './pages/GlobalSettings';
 import { ResourcesListPage } from './pages/resources/ResourcesListPage';
 import { ResourceEditorPage } from './pages/resources/ResourceEditorPage';
+import { NavigationListPage } from './pages/navigation/NavigationListPage';
+import { NavEditorPage } from './pages/navigation/NavEditorPage';
 import { LoginPage } from './pages/LoginPage';
 import { AuthProvider } from './components/auth/AuthProvider';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -27,6 +29,9 @@ function App() {
                   <Route path="/resources" element={<ResourcesListPage />} />
                   <Route path="/resources/:id/edit" element={<ResourceEditorPage />} />
                   <Route path="/resources/new" element={<ResourceEditorPage />} />
+                  <Route path="/navigation" element={<NavigationListPage />} />
+                  <Route path="/navigation/new" element={<NavEditorPage />} />
+                  <Route path="/navigation/:id/edit" element={<NavEditorPage />} />
                 </Routes>
               </AppLayout>
             } />

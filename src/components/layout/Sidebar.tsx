@@ -11,7 +11,8 @@ import {
   Users,
   Megaphone,
   Globe,
-  FolderOpen
+  FolderOpen,
+  LayoutTemplate
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Link, useLocation } from 'react-router-dom';
@@ -30,6 +31,7 @@ const projects = [
 const platformCore = [
   { path: '/users', name: 'Users & Membership', icon: Users },
   { path: '/resources', name: 'Resources Manager', icon: FolderOpen },
+  { path: '/navigation', name: 'Navigation Manager', icon: LayoutTemplate },
   { path: '/campaigns', name: 'Campaigns & SEO', icon: Megaphone },
   { path: '/settings', name: 'Global Settings', icon: Globe },
 ];
