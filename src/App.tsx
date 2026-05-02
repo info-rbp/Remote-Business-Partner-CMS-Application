@@ -4,19 +4,36 @@ import { Dashboard } from './pages/Dashboard';
 import { UsersMembership } from './pages/UsersMembership';
 import { CampaignsSEO } from './pages/CampaignsSEO';
 import { GlobalSettings } from './pages/GlobalSettings';
+import { ResourcesListPage } from './pages/resources/ResourcesListPage';
+import { ResourceEditorPage } from './pages/resources/ResourceEditorPage';
+import { LoginPage } from './pages/LoginPage';
+import { AuthProvider } from './components/auth/AuthProvider';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 function App() {
   return (
-    <Router>
-      <AppLayout>
+    <AuthProvider>
+      <Router>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/users" element={<UsersMembership />} />
-          <Route path="/campaigns" element={<CampaignsSEO />} />
-          <Route path="/settings" element={<GlobalSettings />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/*" element={
+              <AppLayout>
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/users" element={<UsersMembership />} />
+                  <Route path="/campaigns" element={<CampaignsSEO />} />
+                  <Route path="/settings" element={<GlobalSettings />} />
+                  <Route path="/resources" element={<ResourcesListPage />} />
+                  <Route path="/resources/:id/edit" element={<ResourceEditorPage />} />
+                  <Route path="/resources/new" element={<ResourceEditorPage />} />
+                </Routes>
+              </AppLayout>
+            } />
+          </Route>
         </Routes>
-      </AppLayout>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 }
 

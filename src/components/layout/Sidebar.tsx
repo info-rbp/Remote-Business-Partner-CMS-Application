@@ -10,7 +10,8 @@ import {
   AppWindow,
   Users,
   Megaphone,
-  Globe
+  Globe,
+  FolderOpen
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Link, useLocation } from 'react-router-dom';
@@ -28,6 +29,7 @@ const projects = [
 
 const platformCore = [
   { path: '/users', name: 'Users & Membership', icon: Users },
+  { path: '/resources', name: 'Resources Manager', icon: FolderOpen },
   { path: '/campaigns', name: 'Campaigns & SEO', icon: Megaphone },
   { path: '/settings', name: 'Global Settings', icon: Globe },
 ];
